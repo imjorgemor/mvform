@@ -15,7 +15,6 @@ const FormRenderer = (props: FormRendererProps) => {
     if (field.required) {
       acc[field.name] = (value) => {
         if (value === '' || value === undefined || value === null) {
-          console.log('validating', value);
           return `${field.name} is required`;
         }
         return false;
@@ -32,7 +31,6 @@ const FormRenderer = (props: FormRendererProps) => {
     resolver,
     mode
   })
-  console.log('errors', errors);
 
   const onSubmit = (data: any) => {
     console.log('Form submitted:', data);

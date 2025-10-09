@@ -18,9 +18,11 @@ const DynamicField = ({ field, register, error }: DynamicFieldProps) => {
         {field.required && <span>*</span>}
       </FieldLabel>
       <Input id={field.id}
+        {...register(field.name)}
+        aria-invalid={!!error}
         type={field.type}
         placeholder={field.placeholder}
-        {...register(field.name)} aria-invalid={!!error} />
+      />
       <FieldError>{error}</FieldError>
     </Field>
 
