@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Loader2, Copy, Check } from 'lucide-react';
 
 import { AppSidebar } from "@/components/layout/app-sidebar";
@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button";
 import { SidebarContent, SidebarFooter, SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from "@/components/ui/textarea";
-import {FormRenderer} from "@/components/form-renderer";
+import { FormRenderer } from "@/components/form-renderer";
+import { PasswordOverlay } from "@/components/password-overlay";
 
 export default function Home() {
   const [prompt, setPrompt] = useState('');
@@ -16,6 +17,7 @@ export default function Home() {
   const [schema, setSchema] = useState<any | null>(null); //formSchema
   const [code, setCode] = useState('');
   const [copied, setCopied] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const handleGenerate = async () => {
     if (!prompt.trim()) return;
@@ -49,8 +51,20 @@ export default function Home() {
   };
 
 
+  useEffect(() => {
+    const access = localStorage.getItem("appAccess");
+    if (access === "granted") {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  const handleAuthentication = () => {
+    setIsAuthenticated(true);
+  };
+
   return (
     <div>
+      {!isAuthenticated && <PasswordOverlay onCorrectPassword={handleAuthentication} />}
       <main>
         <SidebarProvider
           style={
@@ -60,9 +74,7 @@ export default function Home() {
           }
         >
           <AppSidebar>
-            <SidebarContent>
-
-            </SidebarContent>
+            <SidebarContent></SidebarContent>
             <SidebarFooter>
               <div className="p-4">
                 <div className="flex flex-col items-center gap-2">
