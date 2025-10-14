@@ -34,7 +34,7 @@ const FormRenderer = (props: FormRendererProps) => {
 
   const onSubmit = (data: any) => {
     console.log('Form submitted:', data);
-    alert('Form submitted! Check console for data.');
+    window.alert('Form submitted! Check console for data:' + JSON.stringify(data, null, 2));
   };
 
   const handleReset = () => {
@@ -51,7 +51,7 @@ const FormRenderer = (props: FormRendererProps) => {
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} id={id} name={name}>
-        <div className='flex flex-col gap-4'>
+        <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 mb-4'>
           {fields?.map((field) => (
             <DynamicField
               key={field.id}
@@ -62,20 +62,20 @@ const FormRenderer = (props: FormRendererProps) => {
           ))}
         </div>
 
-        <div className="flex gap-3 pt-4">
+        <div className="flex gap-2 justify-end">
           {buttons?.map((button) => (
             <Button
+              size="lg"
               key={button.id}
               type={button.type}
               variant={button.variant || 'default'}
               onClick={
-                button.type === 'button'
+                button.type === 'submit'
                   ? handleSubmit(onSubmit)
                   : button.type === 'reset'
                     ? handleReset
                     : undefined
               }
-              className={button.type === 'submit' ? 'flex-1' : ''}
             >
               {button.label}
             </Button>

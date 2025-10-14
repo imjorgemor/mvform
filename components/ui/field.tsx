@@ -6,6 +6,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
+import { TriangleAlertIcon } from "lucide-react"
 
 function FieldSet({ className, ...props }: React.ComponentProps<"fieldset">) {
   return (
@@ -55,7 +56,7 @@ function FieldGroup({ className, ...props }: React.ComponentProps<"div">) {
 }
 
 const fieldVariants = cva(
-  "group/field flex w-full gap-3 data-[invalid=true]:text-destructive",
+  "group/field flex w-full gap-1 data-[invalid=true]:text-destructive",
   {
     variants: {
       orientation: {
@@ -225,7 +226,14 @@ function FieldError({
       className={cn("text-destructive text-sm font-normal", className)}
       {...props}
     >
-      {content}
+      <div className="flex items-center gap-1">
+        <div>
+          <TriangleAlertIcon size="12" />
+        </div>
+        <div>
+          {content}
+        </div>
+      </div>
     </div>
   )
 }

@@ -103,7 +103,6 @@ export function createFormControl<TFieldValues extends FieldValues = FieldValues
 
 
   const _updateIsValid = async (updateState?: boolean) => {
-    console.log('update is valid');
     if (_options.resolver) {
       let tempErrorState: Partial<Record<keyof TFieldValues, string>> = {};
       for (const field of Object.keys(_formValues)) {
@@ -118,7 +117,6 @@ export function createFormControl<TFieldValues extends FieldValues = FieldValues
       if (isValid !== _formState.isValid) {
         _formState.isValid = isValid;
         if (updateState) {
-          console.log('updating isValid', isValid, tempErrorState);
           stateSubject.next({ isValid, errors: tempErrorState });
         }
       }
@@ -271,7 +269,6 @@ export function createFormControl<TFieldValues extends FieldValues = FieldValues
     const fieldError = await _executeSchema(name) || false;
     // fill formState error
     if (fieldError) {
-      console.log
       setError(name, fieldError);
       _updateIsValid(true);
     } else {

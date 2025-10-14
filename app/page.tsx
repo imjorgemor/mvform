@@ -103,7 +103,7 @@ export default function Home() {
                 <div className="flex-1 flex items-center justify-center text-muted-foreground">
                   <div className="text-center">
                     <p className="text-lg">No form generated yet</p>
-                    <p className="text-sm mt-2">Enter a prompt and click Generate</p>
+                    <p className="text-sm mt-2">Enter a prompt and click "Generate"</p>
                   </div>
                 </div>
               ) : (

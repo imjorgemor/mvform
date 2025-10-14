@@ -13,7 +13,7 @@ MODE:
 - 'all': Validate on both change on submit
 
 SUPPORTED FIELD TYPES:
-- 'text' | 'email' | 'number' | 'date' | 'tel' | 'password';
+- 'text' | 'email' | 'number' | 'date' | 'tel' | 'password' | 'checkbox' | 'radio' | 'textarea' | 'select';
 
 FIELD STRUCTURE:
 - id: unique identifier (kebab-case)
@@ -22,6 +22,10 @@ FIELD STRUCTURE:
 - type: one of the supported types
 - placeholder: helpful placeholder text
 - required: boolean
+- disabled: boolean
+- readonly: boolean
+- options: array of {label, value} for select/radio
+- defaultValue: string | number | boolean
 
 BUTTON STRUCTURE:
 - id: unique identifier (kebab-case)
