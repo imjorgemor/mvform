@@ -20,12 +20,12 @@ FIELD STRUCTURE:
 - label: human-readable label
 - name: camelCase for form handling
 - type: one of the supported types
-- placeholder: helpful placeholder text
-- required: boolean
-- disabled: boolean
-- readonly: boolean
-- options: array of {label, value} for select/radio
 - defaultValue: string | number | boolean
+- disabled: boolean
+- placeholder: helpful placeholder text
+- readonly: boolean
+- required: boolean
+- options: array of {label, value} for select/radio
 
 BUTTON STRUCTURE:
 - id: unique identifier (kebab-case)

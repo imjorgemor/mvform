@@ -29,5 +29,4 @@ export type FormButton = {
   label: string;
   type: 'submit' | 'reset' | 'button';
   variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
-  //action?: string; // For custom actions like 'clear', 'cancel', etc.
 }

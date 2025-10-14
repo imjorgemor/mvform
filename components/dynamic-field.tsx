@@ -3,7 +3,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from './ui/textarea';
 import { Radio } from './ui/radio';
 import { Field, FieldDescription, FieldError, FieldLabel, FieldSet } from './ui/field';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue  } from './ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import type { FormField } from '@/lib/types/schema';
 import type { UseFormRegister, FieldValues } from '@/lib/useForm/typesV1';
 
@@ -16,7 +16,7 @@ type DynamicFieldProps = {
 const DynamicField = ({ field, register, error }: DynamicFieldProps) => {
 
   if (field.type === 'select') {
-    const {onChange, ...rest} = register(field.name);
+    const { onChange, ...rest } = register(field.name);
     return (
       <Field>
         <FieldLabel htmlFor={field.id}>
@@ -40,7 +40,7 @@ const DynamicField = ({ field, register, error }: DynamicFieldProps) => {
             ))}
           </SelectContent>
         </Select>
-        <FieldError>{error}</FieldError>
+          <FieldError>{error}</FieldError>
       </Field>
     );
   }
@@ -48,51 +48,43 @@ const DynamicField = ({ field, register, error }: DynamicFieldProps) => {
   if (field.type === 'radio') {
     return (
       <FieldSet>
-        <FieldLabel>{field.label}</FieldLabel>
+        <FieldLabel htmlFor={field.id}>{field.label} {field.required && <span>*</span>}</FieldLabel>
         <FieldDescription>
           {field.placeholder}
         </FieldDescription>
         {field.options?.map((option) => (
-          <Field orientation="horizontal" key={option.value}>
+          <Field orientation="horizontal" key={option.value} id={field.id}>
             <Radio
               {...register(field.name)}
-              defaultChecked={field.defaultValue === option.value}
               aria-invalid={!!error}
-              value={option.value}
+              defaultChecked={field.defaultValue === option.value}
               id={option.value}
+              value={option.value}
             />
             <FieldLabel htmlFor={option.value} className="font-normal">
               {option.label}
             </FieldLabel>
           </Field>
         ))}
-        {error && (
-          <FieldError>{error}</FieldError>
-        )}
+        <FieldError>{error}</FieldError>
       </FieldSet>
     );
   }
 
   if (field.type === 'textarea') {
     return (
-      <Field data-invalid={!!error}>
-        <FieldLabel htmlFor="form-rhf-textarea-about">
-          More about you
+      <Field>
+        <FieldLabel htmlFor={field.id}>
+          {field.label} {field.required && <span>*</span>}
         </FieldLabel>
         <Textarea
-          id={field.id}
           {...register(field.name)}
           aria-invalid={!!error}
-          placeholder={field.placeholder}
           className="min-h-[120px]"
+          id={field.id}
+          placeholder={field.placeholder}
         />
-        <FieldDescription>
-          Tell us more about yourself. This will be used to help us
-          personalize your experience.
-        </FieldDescription>
-        {error && (
-          <FieldError>{error}</FieldError>
-        )}
+        <FieldError>{error}</FieldError>
       </Field>
     );
   }
@@ -100,23 +92,18 @@ const DynamicField = ({ field, register, error }: DynamicFieldProps) => {
   if (field.type === 'checkbox') {
     return (
       <FieldSet>
-        <FieldDescription>
-          {field.placeholder}
-        </FieldDescription>
         <Field orientation="horizontal">
           <Checkbox
-            id={field.id}
             {...register(field.name)}
-            defaultChecked={field.defaultValue as boolean}
             aria-invalid={!!error}
+            defaultChecked={field.defaultValue as boolean}
+            id={field.id}
           />
-          <FieldLabel
-            htmlFor={field.id}
-            className="font-normal"
-          >
+          <FieldLabel htmlFor={field.id} className='font-normal'>
             {field.label}
           </FieldLabel>
         </Field>
+        <FieldError>{error}</FieldError>
       </FieldSet>
     );
   }
@@ -128,11 +115,11 @@ const DynamicField = ({ field, register, error }: DynamicFieldProps) => {
         {field.required && <span>*</span>}
       </FieldLabel>
       <Input
-        id={field.id}
         {...register(field.name)}
         aria-invalid={!!error}
-        type={field.type}
+        id={field.id}
         placeholder={field.placeholder}
+        type={field.type}
       />
       <FieldError>{error}</FieldError>
     </Field>

@@ -32,7 +32,7 @@ const FormRenderer = (props: FormRendererProps) => {
     mode
   })
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: FieldValues) => {
     console.log('Form submitted:', data);
     window.alert('Form submitted! Check console for data:' + JSON.stringify(data, null, 2));
   };
