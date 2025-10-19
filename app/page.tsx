@@ -11,38 +11,20 @@ import { Textarea } from "@/components/ui/textarea";
 import { FormRenderer } from "@/components/form-renderer";
 import { PasswordOverlay } from "@/components/password-overlay";
 
+import { experimental_useObject as useObject } from '@ai-sdk/react';
+import { FormSchema, formSchema } from "@/lib/types/schema";
+import { generateCode } from "@/lib/generate-code";
+
 export default function Home() {
   const [prompt, setPrompt] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [schema, setSchema] = useState<any | null>(null); //formSchema
-  const [code, setCode] = useState('');
   const [copied, setCopied] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const handleGenerate = async () => {
-    if (!prompt.trim()) return;
-
-    setLoading(true);
-    setSchema(null);
-    setCode('');
-
-    try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt }),
-      });
-
-      const data = await response.json();
-      setSchema(data.schema);
-      setCode(data.code);
-    } catch (error) {
-      console.error('Error:', error);
-      alert('Failed to generate form. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { object: schema, submit, isLoading } = useObject({
+    api: '/api/chat',
+    schema: formSchema,
+  });
+  const code = generateCode(schema as FormSchema);
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(code);
@@ -61,6 +43,7 @@ export default function Home() {
   const handleAuthentication = () => {
     setIsAuthenticated(true);
   };
+  console.log("fields", schema?.fields)
 
   return (
     <div>
@@ -83,15 +66,15 @@ export default function Home() {
                     onChange={(event) => setPrompt(event.target.value)}
                     placeholder="Example: Create a contact form with name, email, phone, and message fields"
                     className="flex-1 resize-none mb-4 text-base"
-                    disabled={loading}
+                    disabled={isLoading}
                   />
                   <Button
-                    onClick={handleGenerate}
-                    disabled={loading || !prompt.trim()}
+                    onClick={() => submit(prompt)}
+                    disabled={isLoading || !prompt.trim()}
                     size="lg"
                     className="w-full"
                   >
-                    {loading ? (
+                    {isLoading ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         Generating...
@@ -127,17 +110,26 @@ export default function Home() {
                     </TabsList>
                   </div>
 
-                  {/* Preview Tab */}
+
                   <TabsContent
                     value="preview"
                     className="flex-1 overflow-auto p-6 mt-0"
                   >
                     <div className="mx-auto">
-                      <FormRenderer {...schema} />
+                      <FormRenderer
+                        key={"form-renderer-" + (schema.fields ? schema.fields?.at(-1)?.id : 'empty')}
+                        id={schema.id}
+                        name={schema.name}
+                        title={schema.title}
+                        description={schema.description}
+                        fields={schema?.fields as FormSchema['fields']}
+                        buttons={schema?.buttons as FormSchema['buttons']}
+                        mode={schema?.mode}
+                      />
                     </div>
                   </TabsContent>
 
-                  {/* Code Tab */}
+
                   <TabsContent
                     value="code"
                     className="flex-1 overflow-auto p-6 mt-0"

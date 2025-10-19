@@ -48,7 +48,6 @@ export function useFormHook<
   useEffect(() => {
     return control._subjects.stateSubject.subscribe({
       next: (value) => {
-        console.log(value)
         const currentState: FormState<TFieldValues> = formControlRef.current!.formState;
         const nextState: FormState<TFieldValues> = { ...currentState, ...value };
         let shouldUpdate = false;
