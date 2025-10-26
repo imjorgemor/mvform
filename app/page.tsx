@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from 'next/navigation';
+import { experimental_useObject as useObject } from '@ai-sdk/react';
 import { Loader2, Copy, Check } from 'lucide-react';
 
 import { AppSidebar } from "@/components/layout/app-sidebar";
@@ -11,29 +13,41 @@ import { Textarea } from "@/components/ui/textarea";
 import { FormRenderer } from "@/components/form-renderer";
 import { PasswordOverlay } from "@/components/password-overlay";
 
-import { experimental_useObject as useObject } from '@ai-sdk/react';
+
 import { FormSchema, formSchema } from "@/lib/types/schema";
 import { generateCode } from "@/lib/generate-code";
 
 export default function Home() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [prompt, setPrompt] = useState('');
   const [copied, setCopied] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [urlSchema, setUrlSchema] = useState<FormSchema | null>(null);
 
-  const { object: schema, submit, isLoading } = useObject({
+  const { object, submit, isLoading } = useObject({
     api: '/api/chat',
     schema: formSchema,
+    onFinish: ({ object }) => {
+      if (object) {
+        setUrlSchema(object);
+        const jsonString = JSON.stringify(object);
+        const encodedSchema = Buffer.from(jsonString, 'utf-8').toString('base64');
+        // Update URL without page reload
+        router.push(`?schema=${encodedSchema}`);
+      }
+    }
   });
-  const code = generateCode(schema as FormSchema);
+  const schema = urlSchema ?? object;
+  const code = generateCode(urlSchema ?? schema as FormSchema);
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(code);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-  };
+    };
 
-
-  useEffect(() => {
+    useEffect(() => {
     const access = localStorage.getItem("appAccess");
     if (access === "granted") {
       setIsAuthenticated(true);
@@ -43,7 +57,15 @@ export default function Home() {
   const handleAuthentication = () => {
     setIsAuthenticated(true);
   };
-  console.log("fields", schema?.fields)
+
+  useEffect(() => {
+    const schemaParam = searchParams.get('schema');
+    if (schemaParam) {
+      const jsonString = Buffer.from(schemaParam, 'base64').toString('utf-8');
+      setUrlSchema(JSON.parse(jsonString));
+    }
+  }, []);
+
 
   return (
     <div>
@@ -69,7 +91,12 @@ export default function Home() {
                     disabled={isLoading}
                   />
                   <Button
-                    onClick={() => submit(prompt)}
+                    onClick={() =>{ 
+                      submit(prompt);
+                      setUrlSchema(null);
+                      router.replace("/");
+                    
+                    }}
                     disabled={isLoading || !prompt.trim()}
                     size="lg"
                     className="w-full"
@@ -110,7 +137,6 @@ export default function Home() {
                     </TabsList>
                   </div>
 
-
                   <TabsContent
                     value="preview"
                     className="flex-1 overflow-auto p-6 mt-0"
@@ -128,7 +154,6 @@ export default function Home() {
                       />
                     </div>
                   </TabsContent>
-
 
                   <TabsContent
                     value="code"

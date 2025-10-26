@@ -33,8 +33,8 @@ const DynamicField = ({ field, register, error }: DynamicFieldProps) => {
             <SelectValue placeholder={field.placeholder || 'Select an option'} />
           </SelectTrigger>
           <SelectContent>
-            {field.options?.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
+            {field.options?.map((option, idx) => (
+              <SelectItem key={`option-${idx}-${option.value}`} value={option.value}>
                 {option.label}
               </SelectItem>
             ))}
@@ -92,7 +92,7 @@ const DynamicField = ({ field, register, error }: DynamicFieldProps) => {
   if (field.type === 'checkbox') {
     return (
       <FieldSet>
-        <Field orientation="horizontal">
+        <Field orientation="horizontal" className='min-h-11 items-center'>
           <Checkbox
             {...register(field.name)}
             aria-invalid={!!error}
