@@ -1,6 +1,7 @@
 import localFont from 'next/font/local'
 import type { Metadata } from "next";
 import "./globals.css";
+import { Suspense } from 'react';
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -33,7 +34,9 @@ export default function RootLayout({
       <body>
         <div className="flex h-full w-full flex-col">
           <div className="relative h-full w-full flex-1 transition-colors z-0">
+          <Suspense fallback={<div>Loading...</div>}>
             {children}
+          </Suspense>
           </div>
         </div>
       </body>
